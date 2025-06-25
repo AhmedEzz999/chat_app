@@ -2,7 +2,6 @@ import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
 import 'package:chat_app/widgets/login_icon.dart';
 import 'package:chat_app/widgets/password_text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignSection extends StatefulWidget {
@@ -57,22 +56,7 @@ class _SignSectionState extends State<SignSection> {
           padding: const EdgeInsets.only(top: 20, bottom: 20),
           child: CustomButton(
             title: 'Sign In',
-            onPressed: () async {
-              try {
-                final credential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    );
-                Navigator.pushReplacementNamed(context, 'home view');
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
-                  print('No user found for that email.');
-                } else if (e.code == 'wrong-password') {
-                  print('Wrong password provided for that user.');
-                }
-              }
-            },
+            onPressed: (){}
           ),
         ),
 

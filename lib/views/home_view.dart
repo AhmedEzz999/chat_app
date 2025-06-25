@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
@@ -12,14 +11,7 @@ class HomeView extends StatelessWidget {
         title: const Text('Home Page'),
         actions: [
           IconButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                'login view',
-                (route) => false,
-              );
-            },
+            onPressed: () {},
             icon: const Icon(Icons.exit_to_app, size: 30, color: Colors.white),
           ),
         ],

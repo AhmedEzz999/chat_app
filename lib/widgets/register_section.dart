@@ -1,7 +1,6 @@
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/custom_text_field.dart';
 import 'package:chat_app/widgets/password_text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSection extends StatefulWidget {
@@ -60,27 +59,7 @@ class _RegisterSectionState extends State<RegisterSection> {
           child: PasswordTextField(controller: _passwordController),
         ),
 
-        CustomButton(
-          title: 'Sign Up',
-          onPressed: () async {
-            try {
-              final credential = await FirebaseAuth.instance
-                  .createUserWithEmailAndPassword(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  );
-              Navigator.pushReplacementNamed(context, 'home view');
-            } on FirebaseAuthException catch (e) {
-              if (e.code == 'weak-password') {
-                print('The password provided is too weak.');
-              } else if (e.code == 'email-already-in-use') {
-                print('The account already exists for that email.');
-              }
-            } catch (e) {
-              print(e);
-            }
-          },
-        ),
+        CustomButton(title: 'Sign Up', onPressed: () {}),
         const SizedBox(height: 10),
 
         Row(
