@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
-  final String hintText;
+class EmailFormField extends StatelessWidget {
   final TextEditingController controller;
-  const CustomTextField({
-    super.key,
-    required this.hintText,
-    required this.controller,
-  });
+
+  const EmailFormField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: (value) =>
+          value == null || value.isEmpty ? 'This field is required' : null,
       controller: controller,
       style: const TextStyle(fontSize: 23, color: Colors.white),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: 'Email',
         hintStyle: const TextStyle(fontSize: 23, color: Colors.white),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),

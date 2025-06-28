@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-class PasswordTextField extends StatefulWidget {
+class PasswordFormField extends StatefulWidget {
   final TextEditingController controller;
-  const PasswordTextField({super.key, required this.controller});
+  const PasswordFormField({super.key, required this.controller});
 
   @override
-  State<PasswordTextField> createState() => _PasswordTextFieldState();
+  State<PasswordFormField> createState() => _PasswordFormFieldState();
 }
 
-class _PasswordTextFieldState extends State<PasswordTextField> {
+class _PasswordFormFieldState extends State<PasswordFormField> {
   bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: (value) =>
+          value == null || value.isEmpty ? 'This field is required' : null,
       controller: widget.controller,
       obscureText: _obscureText,
       style: const TextStyle(fontSize: 23, color: Colors.white),

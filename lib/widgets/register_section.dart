@@ -1,6 +1,10 @@
+import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/custom_button.dart';
-import 'package:chat_app/widgets/custom_text_field.dart';
-import 'package:chat_app/widgets/password_text_field.dart';
+import 'package:chat_app/widgets/custom_snack_bar.dart';
+import 'package:chat_app/widgets/email_form_field.dart';
+import 'package:chat_app/widgets/password_form_field.dart';
+import 'package:chat_app/widgets/user_name_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSection extends StatefulWidget {
@@ -14,6 +18,7 @@ class _RegisterSectionState extends State<RegisterSection> {
   late final TextEditingController _userNameController;
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
+  final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -33,58 +38,88 @@ class _RegisterSectionState extends State<RegisterSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          width: double.infinity,
-          child: Text(
-            textAlign: TextAlign.left,
-            'Register',
-            style: TextStyle(fontSize: 30, color: Colors.white),
-          ),
-        ),
-
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: CustomTextField(
-            hintText: 'Username',
-            controller: _userNameController,
-          ),
-        ),
-
-        CustomTextField(hintText: 'Email', controller: _emailController),
-
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 20),
-          child: PasswordTextField(controller: _passwordController),
-        ),
-
-        CustomButton(title: 'Sign Up', onPressed: () {}),
-        const SizedBox(height: 10),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Already have an account?",
-              style: TextStyle(fontSize: 22, color: Colors.white),
+    return Form(
+      key: _registerFormKey,
+      child: Column(
+        children: [
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              textAlign: TextAlign.left,
+              'Register',
+              style: TextStyle(fontSize: 30, color: Colors.white),
             ),
+          ),
 
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: UserNameFormField(controller: _userNameController),
+          ),
+
+          EmailFormField(controller: _emailController),
+
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 20),
+            child: PasswordFormField(controller: _passwordController),
+          ),
+
+          CustomButton(
+            title: 'Sign Up',
+            onPressed: () async {
+              _registerFormKey.currentState!.validate();
+              try {
+                await AuthService.registerWithEmailAndPassword(
+                  email: _emailController.text,
+                  password: _passwordController.text,
+                );
+                showCustomSnackBar(context, 'User is created successfully.');
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'weak-password') {
+                  showCustomSnackBar(
+                    context,
+                    'The password provided is too weak.',
+                  );
+                } else if (e.code == 'email-already-in-use') {
+                  showCustomSnackBar(
+                    context,
+                    'The account already exists for that email.',
+                  );
+                } else if (e.code == 'invalid-email') {
+                  showCustomSnackBar(
+                    context,
+                    'The email address is badly formatted.',
+                  );
+                }
+              } catch (e) {
+                showCustomSnackBar(context, e.toString());
+              }
+            },
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Already have an account?",
+                style: TextStyle(fontSize: 22, color: Colors.white),
               ),
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Sign In',
-                style: TextStyle(fontSize: 20, color: Colors.blue),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
