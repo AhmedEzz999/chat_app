@@ -14,8 +14,20 @@ class _PasswordFormFieldState extends State<PasswordFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      validator: (value) =>
-          value == null || value.isEmpty ? 'This field is required' : null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Password is required';
+        } else if (value.length < 8) {
+          return 'Password must be at least 8 characters';
+        } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+          return 'Include at least one uppercase letter';
+        } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+          return 'Include at least one number';
+        } else if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
+          return 'Include at least one special character';
+        }
+        return null;
+      },
       controller: widget.controller,
       obscureText: _obscureText,
       style: const TextStyle(fontSize: 23, color: Colors.white),

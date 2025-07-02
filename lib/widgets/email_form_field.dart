@@ -8,8 +8,16 @@ class EmailFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      validator: (value) =>
-          value == null || value.isEmpty ? 'This field is required' : null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Email is required';
+        }
+        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+        if (!emailRegex.hasMatch(value)) {
+          return 'Enter a valid email address';
+        }
+        return null;
+      },
       controller: controller,
       style: const TextStyle(fontSize: 23, color: Colors.white),
       decoration: InputDecoration(

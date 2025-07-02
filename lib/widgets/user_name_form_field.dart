@@ -8,8 +8,16 @@ class UserNameFormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      validator: (value) =>
-          value == null || value.isEmpty ? 'This field is required' : null,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Username is required';
+        } else if (value.length < 3) {
+          return 'Username must be at least 3 characters';
+        } else if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(value)) {
+          return 'Username can only contain letters, numbers, and underscores';
+        }
+        return null;
+      },
       controller: controller,
       style: const TextStyle(fontSize: 23, color: Colors.white),
       decoration: InputDecoration(

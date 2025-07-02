@@ -8,7 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class RegisterSection extends StatefulWidget {
-  const RegisterSection({super.key});
+  final ValueNotifier<bool> isRegistering;
+  const RegisterSection({super.key, required this.isRegistering});
 
   @override
   State<RegisterSection> createState() => _RegisterSectionState();
@@ -63,38 +64,7 @@ class _RegisterSectionState extends State<RegisterSection> {
             child: PasswordFormField(controller: _passwordController),
           ),
 
-          CustomButton(
-            title: 'Sign Up',
-            onPressed: () async {
-              _registerFormKey.currentState!.validate();
-              try {
-                await AuthService.registerWithEmailAndPassword(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                );
-                showCustomSnackBar(context, 'User is created successfully.');
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'weak-password') {
-                  showCustomSnackBar(
-                    context,
-                    'The password provided is too weak.',
-                  );
-                } else if (e.code == 'email-already-in-use') {
-                  showCustomSnackBar(
-                    context,
-                    'The account already exists for that email.',
-                  );
-                } else if (e.code == 'invalid-email') {
-                  showCustomSnackBar(
-                    context,
-                    'The email address is badly formatted.',
-                  );
-                }
-              } catch (e) {
-                showCustomSnackBar(context, e.toString());
-              }
-            },
-          ),
+          CustomButton(title: 'Sign Up', onPressed: _onRegisterPressed),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -121,5 +91,33 @@ class _RegisterSectionState extends State<RegisterSection> {
         ],
       ),
     );
+  }
+
+  void _onRegisterPressed() async {
+    if (_registerFormKey.currentState!.validate()) {
+      widget.isRegistering.value = true;
+      try {
+        await AuthService.registerWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        widget.isRegistering.value = false;
+        showCustomSnackBar(context, 'User is created successfully.');
+      } on FirebaseAuthException catch (e) {
+        widget.isRegistering.value = false;
+        late String message;
+        switch (e.code) {
+          case 'email-already-in-use':
+            message = 'The account already exists for that email.';
+            break;
+          default:
+            message = 'There was an error. Try again later.';
+        }
+        showCustomSnackBar(context, message);
+      } catch (e) {
+        widget.isRegistering.value = false;
+        showCustomSnackBar(context, e.toString());
+      }
+    }
   }
 }

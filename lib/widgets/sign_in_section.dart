@@ -1,19 +1,23 @@
+import 'dart:developer';
+
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/custom_snack_bar.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/login_icon.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SignSection extends StatefulWidget {
-  const SignSection({super.key});
+class SignInSection extends StatefulWidget {
+  final ValueNotifier<bool> isSigning;
+  const SignInSection({super.key, required this.isSigning});
 
   @override
-  State<SignSection> createState() => _SignSectionState();
+  State<SignInSection> createState() => _SignInSectionState();
 }
 
-class _SignSectionState extends State<SignSection> {
+class _SignInSectionState extends State<SignInSection> {
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   final GlobalKey<FormState> _signInFormKey = GlobalKey<FormState>();
@@ -35,6 +39,7 @@ class _SignSectionState extends State<SignSection> {
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _signInFormKey,
       child: Column(
         children: [
           const SizedBox(
@@ -55,21 +60,7 @@ class _SignSectionState extends State<SignSection> {
 
           Padding(
             padding: const EdgeInsets.only(top: 20, bottom: 20),
-            child: CustomButton(
-              title: 'Sign In',
-              onPressed: () async {
-                _signInFormKey.currentState!.validate();
-                try {
-                  await AuthService.signInWithEmailAndPassword(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                  );
-                  showCustomSnackBar(context, 'Signed in successfully.');
-                } on Exception catch (e) {
-                  showCustomSnackBar(context, e.toString());
-                }
-              },
-            ),
+            child: CustomButton(title: 'Sign In', onPressed: _onSigningPressed),
           ),
 
           Row(
@@ -117,5 +108,37 @@ class _SignSectionState extends State<SignSection> {
         ],
       ),
     );
+  }
+
+  void _onSigningPressed() async {
+    if (_signInFormKey.currentState!.validate()) {
+      widget.isSigning.value = true;
+      try {
+        await AuthService.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        widget.isSigning.value = false;
+        showCustomSnackBar(context, 'Signed in successfully.');
+      } on FirebaseAuthException catch (e) {
+        widget.isSigning.value = false;
+        late String message;
+        log(e.code);
+        switch (e.code) {
+          case 'invalid-credential':
+            message = 'Invalid email or password';
+            break;
+          case 'too-many-requests':
+            message = 'Too many login attempts. Try again later.';
+            break;
+          default:
+            message = 'Authentication failed: ${e.message}';
+        }
+        showCustomSnackBar(context, message);
+      } catch (e) {
+        widget.isSigning.value = false;
+        showCustomSnackBar(context, e.toString());
+      }
+    }
   }
 }
