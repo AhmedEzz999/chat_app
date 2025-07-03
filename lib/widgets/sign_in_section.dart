@@ -117,7 +117,7 @@ class _SignInSectionState extends State<SignInSection> {
           password: _passwordController.text,
         );
         showCustomSnackBar(context, 'Signed in successfully.');
-        Navigator.pushReplacementNamed(context, 'home view');
+        Navigator.pushReplacementNamed(context, 'chat view');
       } on FirebaseAuthException catch (e) {
         late String message;
         switch (e.code) {

@@ -18,7 +18,7 @@ class ChatView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           spacing: 5,
           children: [
-            SizedBox(width: 40),
+            SizedBox(width: 60),
             Image(image: AssetImage('assets/images/scholar.png'), height: 70),
             Text(
               'Chat',
@@ -38,7 +38,22 @@ class ChatView extends StatelessWidget {
           children: [
             Expanded(
               child: ListView(
-                children: const [MessageReceived(), MessageSent()],
+                children: const [
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                  MessageReceived(),
+                  MessageSent(),
+                ],
               ),
             ),
             const MessageTextField(),

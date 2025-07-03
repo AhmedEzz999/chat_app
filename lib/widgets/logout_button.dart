@@ -1,3 +1,4 @@
+import 'package:chat_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class LogoutButton extends StatelessWidget {
@@ -6,8 +7,18 @@ class LogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {},
-      icon: const Icon(Icons.exit_to_app, size: 30, color: Colors.white),
+      onPressed: () async {
+        await AuthService.signOut();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          'login view',
+          (route) => false,
+        );
+      },
+      icon: const Padding(
+        padding: EdgeInsets.only(right: 20),
+        child: Icon(Icons.logout, size: 30, color: Colors.white),
+      ),
     );
   }
 }

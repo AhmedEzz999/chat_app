@@ -1,6 +1,7 @@
 import 'package:chat_app/views/chat_view.dart';
 import 'package:chat_app/views/login_view.dart';
 import 'package:chat_app/views/register_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -12,14 +13,9 @@ void main() async {
   runApp(const ChatApp());
 }
 
-class ChatApp extends StatefulWidget {
+class ChatApp extends StatelessWidget {
   const ChatApp({super.key});
 
-  @override
-  State<ChatApp> createState() => _ChatAppState();
-}
-
-class _ChatAppState extends State<ChatApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,7 +25,9 @@ class _ChatAppState extends State<ChatApp> {
         'register view': (context) => const RegisterView(),
         'chat view': (context) => const ChatView(),
       },
-      initialRoute: 'chat view',
+      initialRoute: FirebaseAuth.instance.currentUser == null
+          ? 'login view'
+          : 'chat view',
     );
   }
 }
