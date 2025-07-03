@@ -1,8 +1,6 @@
-import 'dart:developer';
-
+import 'package:chat_app/helper/custom_snack_bar.dart';
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/custom_button.dart';
-import 'package:chat_app/widgets/custom_snack_bar.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/login_icon.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
@@ -118,12 +116,10 @@ class _SignInSectionState extends State<SignInSection> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        widget.isSigning.value = false;
         showCustomSnackBar(context, 'Signed in successfully.');
+        Navigator.pushReplacementNamed(context, 'home view');
       } on FirebaseAuthException catch (e) {
-        widget.isSigning.value = false;
         late String message;
-        log(e.code);
         switch (e.code) {
           case 'invalid-credential':
             message = 'Invalid email or password';
@@ -136,9 +132,9 @@ class _SignInSectionState extends State<SignInSection> {
         }
         showCustomSnackBar(context, message);
       } catch (e) {
-        widget.isSigning.value = false;
         showCustomSnackBar(context, e.toString());
       }
+      widget.isSigning.value = false;
     }
   }
 }

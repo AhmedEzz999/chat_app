@@ -1,4 +1,4 @@
-import 'package:chat_app/views/home_view.dart';
+import 'package:chat_app/views/chat_view.dart';
 import 'package:chat_app/views/login_view.dart';
 import 'package:chat_app/views/register_view.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,9 +27,9 @@ class _ChatAppState extends State<ChatApp> {
       routes: {
         'login view': (context) => const LoginView(),
         'register view': (context) => const RegisterView(),
-        'home view': (context) => const HomeView(),
+        'chat view': (context) => const ChatView(),
       },
-      initialRoute: 'login view',
+      initialRoute: 'chat view',
     );
   }
 }

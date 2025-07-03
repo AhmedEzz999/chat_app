@@ -1,6 +1,6 @@
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/widgets/custom_button.dart';
-import 'package:chat_app/widgets/custom_snack_bar.dart';
+import 'package:chat_app/helper/custom_snack_bar.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
 import 'package:chat_app/widgets/user_name_form_field.dart';
@@ -101,10 +101,8 @@ class _RegisterSectionState extends State<RegisterSection> {
           email: _emailController.text,
           password: _passwordController.text,
         );
-        widget.isRegistering.value = false;
         showCustomSnackBar(context, 'User is created successfully.');
       } on FirebaseAuthException catch (e) {
-        widget.isRegistering.value = false;
         late String message;
         switch (e.code) {
           case 'email-already-in-use':
@@ -115,9 +113,9 @@ class _RegisterSectionState extends State<RegisterSection> {
         }
         showCustomSnackBar(context, message);
       } catch (e) {
-        widget.isRegistering.value = false;
         showCustomSnackBar(context, e.toString());
       }
+      widget.isRegistering.value = false;
     }
   }
 }
