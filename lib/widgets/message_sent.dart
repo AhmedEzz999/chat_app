@@ -2,7 +2,8 @@ import 'package:chat_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageSent extends StatelessWidget {
-  const MessageSent({super.key});
+  final String message;
+  const MessageSent({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +20,9 @@ class MessageSent extends StatelessWidget {
             bottomLeft: Radius.circular(20),
           ),
         ),
-        child: const Text(
-          'I\'m Great.',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+        child: Text(
+          message,
+          style: const TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );

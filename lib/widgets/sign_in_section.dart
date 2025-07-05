@@ -9,6 +9,7 @@ import 'package:chat_app/widgets/login_icon.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInSection extends StatefulWidget {
   final ValueNotifier<bool> isSigning;
@@ -111,6 +112,7 @@ class _SignInSectionState extends State<SignInSection> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+        await saveUserId(_emailController.text);
         showCustomSnackBar(context, 'Signed in successfully.');
         Navigator.pushReplacementNamed(context, ChatView.id);
       } on FirebaseAuthException catch (e) {
@@ -132,4 +134,9 @@ class _SignInSectionState extends State<SignInSection> {
       widget.isSigning.value = false;
     }
   }
+}
+
+Future<void> saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(kUserId, userId);
 }

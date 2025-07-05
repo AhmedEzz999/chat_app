@@ -6,8 +6,11 @@ List<MessageModel> getMessagesList(QuerySnapshot<Object?> messagesInFireStore) {
   final List<MessageModel> messagesList = [];
   for (int i = 0; i < messagesInFireStore.docs.length; i++) {
     messagesList.add(
-      MessageModel(message: messagesInFireStore.docs[i][kMessageCollection]),
+      MessageModel(
+        message: messagesInFireStore.docs[i][kMessageText] ?? '',
+        id: messagesInFireStore.docs[i][kUserId] ?? '',
+      ),
     );
-  }
+}
   return messagesList;
 }

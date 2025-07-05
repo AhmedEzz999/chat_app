@@ -1,3 +1,4 @@
+import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/helper/custom_snack_bar.dart';
 import 'package:chat_app/services/auth_service.dart';
 import 'package:chat_app/views/chat_view.dart';
@@ -8,6 +9,7 @@ import 'package:chat_app/widgets/password_form_field.dart';
 import 'package:chat_app/widgets/user_name_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterSection extends StatefulWidget {
   final ValueNotifier<bool> isRegistering;
@@ -82,7 +84,8 @@ class _RegisterSectionState extends State<RegisterSection> {
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
-                onPressed: () => Navigator.pushReplacementNamed(context, LoginView.id,),
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, LoginView.id),
                 child: const Text(
                   'Sign In',
                   style: TextStyle(fontSize: 20, color: Colors.blue),
@@ -103,6 +106,7 @@ class _RegisterSectionState extends State<RegisterSection> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+        await saveUserId(_emailController.text);
         showCustomSnackBar(context, 'User is created successfully.');
         Navigator.pushReplacementNamed(context, ChatView.id);
       } on FirebaseAuthException catch (e) {
@@ -121,4 +125,9 @@ class _RegisterSectionState extends State<RegisterSection> {
       widget.isRegistering.value = false;
     }
   }
+}
+
+Future<void> saveUserId(String userId) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString(kUserId, userId);
 }

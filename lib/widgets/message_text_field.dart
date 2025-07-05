@@ -1,10 +1,10 @@
 import 'package:chat_app/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MessageTextField extends StatefulWidget {
-  const MessageTextField({super.key});
+  final String idAccount;
+  const MessageTextField({super.key, required this.idAccount});
 
   @override
   State<MessageTextField> createState() => _MessageTextFieldState();
@@ -38,8 +38,9 @@ class _MessageTextFieldState extends State<MessageTextField> {
         onSubmitted: (message) {
           if (message.isNotEmpty) {
             _messages.add({
-              kMessageCollection: message,
+              kMessageText: message,
               kCreatedAt: DateTime.now(),
+              kUserId: widget.idAccount,
             });
             _messageController.clear();
           }
@@ -52,9 +53,9 @@ class _MessageTextFieldState extends State<MessageTextField> {
               final String message = _messageController.text;
               if (message.isNotEmpty) {
                 _messages.add({
-                  kMessageCollection: message,
+                  kMessageText: message,
                   kCreatedAt: DateTime.now(),
-                  
+                  kUserId: widget.idAccount,
                 });
                 _messageController.clear();
               }

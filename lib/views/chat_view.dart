@@ -5,15 +5,34 @@ import 'package:chat_app/widgets/message_text_field.dart';
 import 'package:chat_app/widgets/messages_builder.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   static const String id = 'chat view';
-  ChatView({super.key});
+  const ChatView({super.key});
 
-  final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> {
+  // ignore: prefer_final_fields
+  Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance
       .collection(kMessageCollection)
       .orderBy(kCreatedAt, descending: true)
       .snapshots();
+  String? idAccount;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
+
+  Future<void> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    idAccount = prefs.getString(kUserId);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +70,10 @@ class ChatView extends StatelessWidget {
                   Expanded(
                     child: MessagesBuilder(
                       messages: getMessagesList(snapshot.data!),
+                      idAccount: idAccount!,
                     ),
                   ),
-                  const MessageTextField(),
+                  MessageTextField(idAccount: idAccount!),
                 ],
               ),
             );

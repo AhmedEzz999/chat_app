@@ -12,6 +12,7 @@ abstract class AppImages {
   static const String kFacebookLogo = 'assets/images/facebook_logo.png';
 }
 
-const String kMessageCollection = 'message';
+const String kMessageCollection = 'messages';
+const String kMessageText = 'text';
 const String kCreatedAt = 'created at';
-const String kID = 'id';
+const String kUserId = 'userId';
