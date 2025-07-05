@@ -1,19 +1,64 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MessageTextField extends StatelessWidget {
+class MessageTextField extends StatefulWidget {
   const MessageTextField({super.key});
+
+  @override
+  State<MessageTextField> createState() => _MessageTextFieldState();
+}
+
+class _MessageTextFieldState extends State<MessageTextField> {
+  late final TextEditingController _messageController;
+  final CollectionReference _messages = FirebaseFirestore.instance.collection(
+    kMessageCollection,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _messageController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 30, top: 17),
+      padding: const EdgeInsets.only(bottom: 40, top: 10),
       child: TextField(
+        keyboardType: TextInputType.text,
+        controller: _messageController,
+        onSubmitted: (message) {
+          if (message.isNotEmpty) {
+            _messages.add({
+              kMessageCollection: message,
+              kCreatedAt: DateTime.now(),
+            });
+            _messageController.clear();
+          }
+        },
         minLines: 1,
         maxLines: 3,
         decoration: InputDecoration(
           suffixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              final String message = _messageController.text;
+              if (message.isNotEmpty) {
+                _messages.add({
+                  kMessageCollection: message,
+                  kCreatedAt: DateTime.now(),
+                  
+                });
+                _messageController.clear();
+              }
+            },
             icon: const Icon(Icons.send, color: AppColors.kPrimaryColor),
           ),
           hintText: 'Enter Your Message',

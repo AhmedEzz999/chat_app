@@ -1,8 +1,9 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageReceived extends StatelessWidget {
-  const MessageReceived({super.key});
+  final String message;
+  const MessageReceived({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +11,7 @@ class MessageReceived extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 15),
         decoration: const BoxDecoration(
           color: AppColors.kPrimaryColor,
           borderRadius: BorderRadius.only(
@@ -18,9 +20,9 @@ class MessageReceived extends StatelessWidget {
             bottomRight: Radius.circular(20),
           ),
         ),
-        child: const Text(
-          'How are you?',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+        child: Text(
+          message,
+          style: const TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );

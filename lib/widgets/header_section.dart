@@ -1,3 +1,4 @@
+import 'package:chat_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class HeaderSection extends StatelessWidget {
@@ -8,7 +9,7 @@ class HeaderSection extends StatelessWidget {
     return const Column(
       children: [
         Image(
-          image: AssetImage('assets/images/scholar.png'),
+          image: AssetImage(AppImages.kScholarImage),
           fit: BoxFit.cover,
           height: 150,
           width: 150,

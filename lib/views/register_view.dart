@@ -1,10 +1,11 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/widgets/header_section.dart';
 import 'package:chat_app/widgets/register_section.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegisterView extends StatefulWidget {
+  static const String id = 'register view';
   const RegisterView({super.key});
 
   @override

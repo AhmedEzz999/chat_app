@@ -1,5 +1,8 @@
+import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/helper/custom_snack_bar.dart';
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/views/chat_view.dart';
+import 'package:chat_app/views/register_view.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/login_icon.dart';
@@ -22,9 +25,9 @@ class _SignInSectionState extends State<SignInSection> {
 
   @override
   void initState() {
+    super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    super.initState();
   }
 
   @override
@@ -64,18 +67,9 @@ class _SignInSectionState extends State<SignInSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              LoginIcon(
-                imageSource: 'assets/images/google_logo.png',
-                onPressed: () {},
-              ),
-              LoginIcon(
-                imageSource: 'assets/images/facebook_logo.png',
-                onPressed: () {},
-              ),
-              LoginIcon(
-                imageSource: 'assets/images/apple_logo.png',
-                onPressed: () {},
-              ),
+              LoginIcon(imageSource: AppImages.kGoogleLogo, onPressed: () {}),
+              LoginIcon(imageSource: AppImages.kFacebookLogo, onPressed: () {}),
+              LoginIcon(imageSource: AppImages.kAppleLogo, onPressed: () {}),
             ],
           ),
 
@@ -95,7 +89,8 @@ class _SignInSectionState extends State<SignInSection> {
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
-                onPressed: () => Navigator.pushNamed(context, 'register view'),
+                onPressed: () =>
+                    Navigator.pushReplacementNamed(context, RegisterView.id),
                 child: const Text(
                   'Sign Up',
                   style: TextStyle(fontSize: 20, color: Colors.blue),
@@ -117,7 +112,7 @@ class _SignInSectionState extends State<SignInSection> {
           password: _passwordController.text,
         );
         showCustomSnackBar(context, 'Signed in successfully.');
-        Navigator.pushReplacementNamed(context, 'chat view');
+        Navigator.pushReplacementNamed(context, ChatView.id);
       } on FirebaseAuthException catch (e) {
         late String message;
         switch (e.code) {

@@ -1,6 +1,8 @@
-import 'package:chat_app/services/auth_service.dart';
-import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/helper/custom_snack_bar.dart';
+import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/views/chat_view.dart';
+import 'package:chat_app/views/login_view.dart';
+import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
 import 'package:chat_app/widgets/user_name_form_field.dart';
@@ -23,10 +25,10 @@ class _RegisterSectionState extends State<RegisterSection> {
 
   @override
   void initState() {
+    super.initState();
     _userNameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    super.initState();
   }
 
   @override
@@ -80,7 +82,7 @@ class _RegisterSectionState extends State<RegisterSection> {
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pushReplacementNamed(context, LoginView.id,),
                 child: const Text(
                   'Sign In',
                   style: TextStyle(fontSize: 20, color: Colors.blue),
@@ -102,6 +104,7 @@ class _RegisterSectionState extends State<RegisterSection> {
           password: _passwordController.text,
         );
         showCustomSnackBar(context, 'User is created successfully.');
+        Navigator.pushReplacementNamed(context, ChatView.id);
       } on FirebaseAuthException catch (e) {
         late String message;
         switch (e.code) {

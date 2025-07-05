@@ -1,12 +1,19 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
+import 'package:chat_app/services/get_messages_list.dart';
 import 'package:chat_app/widgets/logout_button.dart';
-import 'package:chat_app/widgets/message_received.dart';
-import 'package:chat_app/widgets/message_sent.dart';
 import 'package:chat_app/widgets/message_text_field.dart';
+import 'package:chat_app/widgets/messages_builder.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChatView extends StatelessWidget {
-  const ChatView({super.key});
+  static const String id = 'chat view';
+  ChatView({super.key});
+
+  final Stream<QuerySnapshot> _messageStream = FirebaseFirestore.instance
+      .collection(kMessageCollection)
+      .orderBy(kCreatedAt, descending: true)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +23,9 @@ class ChatView extends StatelessWidget {
         backgroundColor: AppColors.kPrimaryColor,
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 5,
           children: [
-            SizedBox(width: 60),
-            Image(image: AssetImage('assets/images/scholar.png'), height: 70),
+            SizedBox(width: 70),
+            Image(image: AssetImage(AppImages.kScholarImage), height: 70),
             Text(
               'Chat',
               style: TextStyle(
@@ -32,33 +38,35 @@ class ChatView extends StatelessWidget {
         ),
         actions: const [LogoutButton()],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: const [
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
-                  MessageReceived(),
-                  MessageSent(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _messageStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasData) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: MessagesBuilder(
+                      messages: getMessagesList(snapshot.data!),
+                    ),
+                  ),
+                  const MessageTextField(),
                 ],
               ),
-            ),
-            const MessageTextField(),
-          ],
-        ),
+            );
+          } else {
+            return const Center(
+              child: Text(
+                'There is an error. Try again later.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 40),
+              ),
+            );
+          }
+        },
       ),
     );
   }

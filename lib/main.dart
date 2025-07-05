@@ -21,13 +21,13 @@ class ChatApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        'login view': (context) => const LoginView(),
-        'register view': (context) => const RegisterView(),
-        'chat view': (context) => const ChatView(),
+        LoginView.id: (context) => const LoginView(),
+        RegisterView.id: (context) => const RegisterView(),
+        ChatView.id: (context) => ChatView(),
       },
       initialRoute: FirebaseAuth.instance.currentUser == null
-          ? 'login view'
-          : 'chat view',
+          ? LoginView.id
+          : ChatView.id,
     );
   }
 }

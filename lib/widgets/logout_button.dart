@@ -1,4 +1,5 @@
 import 'package:chat_app/services/auth_service.dart';
+import 'package:chat_app/views/login_view.dart';
 import 'package:flutter/material.dart';
 
 class LogoutButton extends StatelessWidget {
@@ -11,7 +12,7 @@ class LogoutButton extends StatelessWidget {
         await AuthService.signOut();
         Navigator.pushNamedAndRemoveUntil(
           context,
-          'login view',
+          LoginView.id,
           (route) => false,
         );
       },

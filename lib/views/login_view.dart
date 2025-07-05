@@ -1,10 +1,11 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
 import 'package:chat_app/widgets/header_section.dart';
 import 'package:chat_app/widgets/sign_in_section.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class LoginView extends StatefulWidget {
+  static const String id = 'login view';
   const LoginView({super.key});
 
   @override

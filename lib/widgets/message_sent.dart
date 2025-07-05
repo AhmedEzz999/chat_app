@@ -1,4 +1,4 @@
-import 'package:chat_app/theme/app_colors.dart';
+import 'package:chat_app/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageSent extends StatelessWidget {
@@ -10,6 +10,7 @@ class MessageSent extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: Container(
         padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.only(bottom: 15),
         decoration: const BoxDecoration(
           color: AppColors.kSecondaryColor,
           borderRadius: BorderRadius.only(
