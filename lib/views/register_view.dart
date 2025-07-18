@@ -1,50 +1,47 @@
 import 'package:chat_app/constants/constants.dart';
+import 'package:chat_app/cubits/sign_up_cubit/sign_up_cubit.dart';
+import 'package:chat_app/helper/custom_snack_bar.dart';
+import 'package:chat_app/views/chat_view.dart';
 import 'package:chat_app/widgets/header_section.dart';
 import 'package:chat_app/widgets/register_section.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RegisterView extends StatefulWidget {
+class RegisterView extends StatelessWidget {
   static const String id = 'register view';
   const RegisterView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
-}
-
-class _RegisterViewState extends State<RegisterView> {
-  final ValueNotifier<bool> isRegistering = ValueNotifier(false);
-
-  @override
-  void dispose() {
-    isRegistering.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: isRegistering,
-      builder: (context, loading, _) => ModalProgressHUD(
-        inAsyncCall: loading,
-        child: Scaffold(
-          backgroundColor: AppColors.kPrimaryColor,
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 30,
+    return Scaffold(
+      backgroundColor: AppColors.kPrimaryColor,
+      body: SafeArea(
+        child: BlocProvider(
+          create: (context) => SignUpCubit(),
+          child: BlocConsumer<SignUpCubit, SignUpState>(
+            listener: (context, state) {
+              if (state is SignUpSuccess) {
+                showCustomSnackBar(context, 'Signed in successfully.');
+                Navigator.pushReplacementNamed(context, ChatView.id);
+              }
+              if (state is SignUpFailed) {
+                showCustomSnackBar(context, state.errorMessage);
+              }
+            },
+            builder: (context, state) {
+              return const SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+                  child: Column(
+                    children: [
+                      HeaderSection(),
+                      SizedBox(height: 50),
+                      RegisterSection(),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    const HeaderSection(),
-                    const SizedBox(height: 50),
-                    RegisterSection(isRegistering: isRegistering),
-                  ],
-                ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

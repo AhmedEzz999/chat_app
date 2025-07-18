@@ -11,6 +11,6 @@ List<MessageModel> getMessagesList(QuerySnapshot<Object?> messagesInFireStore) {
         id: messagesInFireStore.docs[i][kUserId] ?? '',
       ),
     );
-}
+  }
   return messagesList;
 }

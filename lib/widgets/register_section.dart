@@ -1,19 +1,14 @@
-import 'package:chat_app/constants/constants.dart';
-import 'package:chat_app/helper/custom_snack_bar.dart';
-import 'package:chat_app/services/auth_service.dart';
-import 'package:chat_app/views/chat_view.dart';
+import 'package:chat_app/cubits/sign_up_cubit/sign_up_cubit.dart';
 import 'package:chat_app/views/login_view.dart';
 import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/email_form_field.dart';
 import 'package:chat_app/widgets/password_form_field.dart';
 import 'package:chat_app/widgets/user_name_form_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterSection extends StatefulWidget {
-  final ValueNotifier<bool> isRegistering;
-  const RegisterSection({super.key, required this.isRegistering});
+  const RegisterSection({super.key});
 
   @override
   State<RegisterSection> createState() => _RegisterSectionState();
@@ -68,7 +63,16 @@ class _RegisterSectionState extends State<RegisterSection> {
             child: PasswordFormField(controller: _passwordController),
           ),
 
-          CustomButton(title: 'Sign Up', onPressed: _onRegisterPressed),
+          CustomButton(
+            title: 'Sign Up',
+            onPressed: () {
+              context.read<SignUpCubit>().onRegisterPressed(
+                email: _emailController.text,
+                password: _passwordController.text,
+                key: _registerFormKey,
+              );
+            },
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -97,37 +101,4 @@ class _RegisterSectionState extends State<RegisterSection> {
       ),
     );
   }
-
-  void _onRegisterPressed() async {
-    if (_registerFormKey.currentState!.validate()) {
-      widget.isRegistering.value = true;
-      try {
-        await AuthService.registerWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
-        await saveUserId(_emailController.text);
-        showCustomSnackBar(context, 'User is created successfully.');
-        Navigator.pushReplacementNamed(context, ChatView.id);
-      } on FirebaseAuthException catch (e) {
-        late String message;
-        switch (e.code) {
-          case 'email-already-in-use':
-            message = 'The account already exists for that email.';
-            break;
-          default:
-            message = 'There was an error. Try again later.';
-        }
-        showCustomSnackBar(context, message);
-      } catch (e) {
-        showCustomSnackBar(context, e.toString());
-      }
-      widget.isRegistering.value = false;
-    }
-  }
-}
-
-Future<void> saveUserId(String userId) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString(kUserId, userId);
 }

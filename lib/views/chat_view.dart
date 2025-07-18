@@ -26,10 +26,10 @@ class _ChatViewState extends State<ChatView> {
   @override
   void initState() {
     super.initState();
-    getUserId();
+    _getUserId();
   }
 
-  Future<void> getUserId() async {
+  Future<void> _getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     idAccount = prefs.getString(kUserId);
   }
